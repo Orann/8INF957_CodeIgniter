@@ -5,14 +5,19 @@ $CI = & get_instance();
 
 $config = array(
   //Formulaire de connexion au site-------------------------------------------
-  'action' => array(
+  'connexion' => array(
     array(
-      'field' => 'montant',
-      'label' => 'montant',
-      'rules' => 'required|greater_than[0]|montant_check'
+      'field' => 'login',
+      'label' => 'login',
+      'rules' => 'required'
+    ),
+    array(
+      'field' => 'mot_de_passe',
+      'label' => 'mot_de_passe',
+      'rules' => 'required'  
     )
   )
 );
 
-$config['error_prefix'] = '<p class="error">';
-$config['error_suffix'] = '</p>';
+$config['error_prefix'] = '<span class="red-text  text-lighten-1">';
+$config['error_suffix'] = '</span>';

@@ -23,63 +23,27 @@ class Accueil extends CI_Controller {
      */
     public function index() {
         $this->load->view('header', $this->data_for_header);
-
+        $erreur = array();
         if ($this->input->post('formulaire_connexion')) {
-            $utilisateur = $this->Personne_model->get_personne($this->input->post('login'));
-
-            if ($this->form_validation->run('connexion') & $utilisateur != NULL) {
-                $verification_mot_de_passe = password_verify($this->input->post('mot_de_passe'), $utilisateur->mot_de_passe);
-
-                if ($utilisateur->actif == 0) {
-                    $this->session->set_flashdata('connexion_erreur', 'Votre compte n\'est pas activé, veuillez consulter votre boite mail.');
-                } else if ($verification_mot_de_passe) {
-                    if ($utilisateur->type == 1) {
-                        $session = array(
-                            'id' => $utilisateur->id,
-                            'type' => 'admin'
-                        );
-                        $this->session->set_userdata($session);
-                        redirect('admin');
-                    } else if ($utilisateur->type == 2 && !strpos($this->input->post('mail'), '@')) {
-                        $session = array(
-                            'id' => $utilisateur->id,
-                            'type' => 'interim'
-                        );
-                        $this->session->set_userdata($session);
-                        if ($this->input->post('session_active')) {
-                            $cookie = array('name' => 'interim', 'value' => $utilisateur->id, 'expire' => (86500 * 30));
-                            set_cookie($cookie);
-                            $cle_cookie = sha1(uniqid(mt_rand()));
-                            $cookie_secure = array('name' => 'cupcake', 'value' => $cle_cookie, 'expire' => (86500 * 30));
-                            set_cookie($cookie_secure);
-                            $this->Site_vitrine_model->set_cle_cookie($utilisateur->id, $cle_cookie);
-                        }
-                        redirect('interim');
-                    } else if ($utilisateur->type == 3) {
-                        $session = array(
-                            'id' => $utilisateur->id,
-                            'type' => 'wouffeur'
-                        );
-                        $this->session->set_userdata($session);
-                        if ($this->input->post('session_active')) {
-                            $cookie = array('name' => 'wouffeur', 'value' => $utilisateur->id, 'expire' => (86500 * 30));
-                            set_cookie($cookie);
-                            $cle_cookie = sha1(uniqid(mt_rand()));
-                            $cookie_secure = array('name' => 'cupcake', 'value' => $cle_cookie, 'expire' => (86500 * 30));
-                            set_cookie($cookie_secure);
-                            $this->Site_vitrine_model->set_cle_cookie($utilisateur->id, $cle_cookie);
-                        }
-                        redirect('wouffeur/accueil');
-                    }
-                } else {
-                    $this->session->set_flashdata('connexion_erreur', 'Email ou mot de passe incorrect');
+            
+            $this->load->model('Personne_model');
+            $mot_de_passe_personne = $this->Personne_model->getPasswordPersonneFromLogin($this->input->post('login'));
+            if ($this->form_validation->run('connexion') & $mot_de_passe_personne != NULL) {
+                $verification_mot_de_passe = password_verify($this->input->post('mot_de_passe'), $mot_de_passe_personne->mot_de_passe);
+                echo($verification_mot_de_passe);
+                if ($verification_mot_de_passe) {
+                    $session = array('id' => $utilisateur->login);
+                    $this->session->set_userdata($session);
+                    redirect('personne/');
+                } else{
+                    $erreur = array('erreur' => 'Login ou mot de passe incorrect.');
                 }
-            } else if ($this->input->post('mot_de_passe') != NULL || $this->input->post('mail') != NULL) {
-                $this->session->set_flashdata('connexion_erreur', 'Email ou mot de passe incorrect');
+            } else {
+                $erreur = array('erreur' => 'Login ou mot de passe incorrect.');
             }
         }
 
-        $this->load->view('accueil');
+        $this->load->view('accueil', $erreur);
         $this->load->view('footer');
     }
 
