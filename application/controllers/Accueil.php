@@ -22,29 +22,16 @@ class Accueil extends CI_Controller {
      * @see https://codeigniter.com/user_guide/general/urls.html
      */
     public function index() {
-        $this->load->view('header', $this->data_for_header);
-        $erreur = array();
-        if ($this->input->post('formulaire_connexion')) {
-            
-            $this->load->model('Personne_model');
-            $mot_de_passe_personne = $this->Personne_model->getPasswordPersonneFromLogin($this->input->post('login'));
-            if ($this->form_validation->run('connexion') & $mot_de_passe_personne != NULL) {
-                $verification_mot_de_passe = password_verify($this->input->post('mot_de_passe'), $mot_de_passe_personne->mot_de_passe);
-                echo($verification_mot_de_passe);
-                if ($verification_mot_de_passe) {
-                    $session = array('id' => $utilisateur->login);
-                    $this->session->set_userdata($session);
-                    redirect('personne/');
-                } else{
-                    $erreur = array('erreur' => 'Login ou mot de passe incorrect.');
-                }
-            } else {
-                $erreur = array('erreur' => 'Login ou mot de passe incorrect.');
-            }
-        }
-
-        $this->load->view('accueil', $erreur);
+        $this->load->view('header', $this->data_for_header);        
+        $this->load->model('Post_model');
+        $all_posts = $this->Post_model->getAllPosts();
+        $this->load->view('accueil', array('posts' => $all_posts));
         $this->load->view('footer');
+    }
+    
+    public function deconnexion(){
+        $this->session->sess_destroy();
+        redirect('');
     }
 
 }

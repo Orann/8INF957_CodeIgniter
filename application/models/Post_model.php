@@ -1,8 +1,14 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+class Post_model extends CI_Model {
+
+    public function getAllPosts() {
+      return $this->db->select('*')
+                      ->from('post')
+                      ->join('personne', 'personne.id = post.id_personne')
+                      ->get()
+                      ->result_array();
+    }   
+}
 
