@@ -9,7 +9,7 @@
 # Configuration de la base de données
 * Le SGBD utilisé est MariaDB 10.1.38
 * Récuéprer le script projetdbdiagram.sql à la racine du projet afin d'importer la base de données dans votre sgbd.
-* Pour configurer la base de données, vous devez modifier le fichier `/banque/application/config/database.php` afin de renseigner les paramètres de configuration lié à votre base de données
+* Pour configurer la base de données, vous devez modifier le fichier `/8INF957_CodeIgniter/application/config/database.php` afin de renseigner les paramètres de configuration lié à votre base de données
 
 # Autres informations
 Pour mener à bien notre projet, nous avons décidé d'utiliser les technologies suivantes : <br>
